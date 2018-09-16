@@ -5,7 +5,7 @@ fun main(args: Array<String>) {
 
     var sum = 0
     0.until(input.length).forEach {
-        sum += if (input[it] == input.charAtLooping(it + 1)) Integer.valueOf(input[it].toString()) else 0
+        sum += if (input[it] == input.charAtLooping(it + 1)) input[it].toInt() else 0
     }
 
     println(sum)
