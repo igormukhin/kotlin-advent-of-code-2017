@@ -1,6 +1,4 @@
-import java.util.regex.Pattern
-
-data class Program(val name: String, val weight: Int, val holds: List<String>) {
+private data class Program(val name: String, val weight: Int, val holds: List<String>) {
     companion object {
         val PATTERN = Regex("([a-z]+) \\((\\d+)\\)( -> (.+))*").toPattern()
 

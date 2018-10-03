@@ -1,4 +1,4 @@
-fun CharSequence.charAtLooping(i : Int) = this[i % length]
+private fun CharSequence.charAtLooping(i : Int) = this[i % length]
 
 fun main(args: Array<String>) {
     val input = Utils.readInput("Advent1")

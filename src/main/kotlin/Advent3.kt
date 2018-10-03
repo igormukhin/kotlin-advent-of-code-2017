@@ -5,7 +5,7 @@ fun main(args: Array<String>) {
     println(distanceFor(input))
 }
 
-fun distanceFor(address: Int): Int {
+private fun distanceFor(address: Int): Int {
     if (address <= 1) return 0
 
     var ring = 0

@@ -1,6 +1,6 @@
 import StreamParserState.*
 
-enum class StreamParserState {
+private enum class StreamParserState {
     IN_GROUP,
     IN_GARBAGE,
     IGNORE_NEXT

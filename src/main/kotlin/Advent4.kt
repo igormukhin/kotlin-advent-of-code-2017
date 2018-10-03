@@ -4,7 +4,7 @@ fun main(args: Array<String>) {
     println(validCount)
 }
 
-fun isValid(line: String): Boolean {
+private fun isValid(line: String): Boolean {
     val words = line.split(Regex("\\s+"))
     val uniqueWords = words.toSet()
     return words.size == uniqueWords.size

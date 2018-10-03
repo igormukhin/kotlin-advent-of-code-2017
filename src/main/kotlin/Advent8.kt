@@ -1,4 +1,4 @@
-data class Operation(val register: String, val doOper: String, val byValue: Int,
+private data class Operation(val register: String, val doOper: String, val byValue: Int,
                      val ifRegister: String, val ifOper: String, val ifValue: Int) {
     companion object {
         val PATTERN = Regex("([a-z]+) (inc|dec) (-?[0-9]+) if ([a-z]+) ([=<>!]+) (-?[0-9]+)").toPattern()
