@@ -1,13 +1,13 @@
-fun main(args: Array<String>) {
-    val banks = Utils.readInput("Advent6").split(Regex("\\s+"))
+fun main() {
+    val banks = Utils.readInput(6).split(Regex("\\s+"))
             .asSequence().map { it.toInt() }.toMutableList()
     var cycles = 0
-    val seen = mutableSetOf<List<Int>>()
+    val seen = mutableMapOf<List<Int>, Int>()
 
-    while (true) {
-        seen.add(banks.toList())
+    do {
+        seen[banks.toList()] = cycles
         cycles++
-        val max = banks.max() ?: 0
+        val max = banks.maxOrNull() ?: 0
         var idx = banks.indexOf(max)
         var value = banks[idx]
         banks[idx] = 0
@@ -17,7 +17,8 @@ fun main(args: Array<String>) {
             value--
         }
 
-        if (seen.contains(banks)) break
-    }
-    println(cycles)
+    } while (banks !in seen)
+
+    println("A: $cycles")
+    println("B: ${cycles - seen[banks]!!}")
 }

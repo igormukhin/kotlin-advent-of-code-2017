@@ -1,18 +1,13 @@
 import StreamParserState.*
 
-private enum class StreamParserState {
-    IN_GROUP,
-    IN_GARBAGE,
-    IGNORE_NEXT
-}
-
-fun main(args: Array<String>) {
-    val stream = Utils.readInput("Advent9")
+fun main() {
+    val input = Utils.readInput(9)
     var score = 0
     var depth = 0
     var state = IN_GROUP
+    var garbage = 0
 
-    stream.asSequence().forEach { ch ->
+    input.forEach { ch ->
         when (state) {
             IN_GROUP -> {
                 when (ch) {
@@ -32,6 +27,7 @@ fun main(args: Array<String>) {
                 when (ch) {
                     '>' -> state = IN_GROUP
                     '!' -> state = IGNORE_NEXT
+                    else -> garbage++
                 }
             }
             IGNORE_NEXT -> {
@@ -40,5 +36,12 @@ fun main(args: Array<String>) {
         }
     }
 
-    println(score)
+    println("A: $score")
+    println("B: $garbage")
+}
+
+private enum class StreamParserState {
+    IN_GROUP,
+    IN_GARBAGE,
+    IGNORE_NEXT
 }

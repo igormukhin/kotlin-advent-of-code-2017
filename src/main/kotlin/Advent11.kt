@@ -1,8 +1,12 @@
-fun main(args: Array<String>) {
-    val moves = Utils.readInput("Advent11").split(',')
+import kotlin.math.abs
+import kotlin.math.max
+
+fun main() {
+    val moves = Utils.readInput(11).split(',')
 
     var x = 0
     var y = 0
+    var max = Int.MIN_VALUE
 
     moves.forEach { move ->
         when (move) {
@@ -12,14 +16,18 @@ fun main(args: Array<String>) {
             "se" -> { y--; x += 2 }
             "nw" -> { y++; x -= 2 }
             "sw" -> { y--; x -= 2 }
-            else -> throw Exception("No!")
+            else -> throw RuntimeException("No!")
         }
+        max = max(max, stepsAway(x, y))
     }
 
-    x = Math.abs(x)
-    y = Math.abs(y)
+    val resultA = stepsAway(x, y)
+    println("A: $resultA")
+    println("B: $max")
+}
 
-    val stepsAway = if (x / 2 >= y) x / 2 else (x / 2) + ((y - (x / 2)) / 2)
-
-    println(stepsAway)
+private fun stepsAway(x: Int, y: Int): Int {
+    val ax = abs(x)
+    val ay = abs(y)
+    return if (ax / 2 >= ay) ax / 2 else (ax / 2) + ((ay - (ax / 2)) / 2)
 }
