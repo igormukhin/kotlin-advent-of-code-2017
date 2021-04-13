@@ -6,7 +6,20 @@ object Utils {
         val resource = this::class.java.getResource("/input/Advent$day.txt")!!
         return resource.readText()
     }
+
+    fun <T> indexOfOrNull(array: Array<Array<T>>, predicate: (value: T, i: Int, j: Int) -> Boolean): Point? {
+        array.forEachIndexed { i, row ->
+            row.forEachIndexed { j, v ->
+                if (predicate(v, i, j)) {
+                    return Point(i, j)
+                }
+            }
+        }
+        return null
+    }
 }
+
+fun Boolean.toInt() = if (this) 1 else 0
 
 data class Point(val x: Int = 0, val y: Int = 0) {
     fun turnClockwise(): Point = Point(-y, x)
@@ -90,9 +103,9 @@ fun permutations(indexes: Int, places: Int = indexes): Iterable<IntArray> {
 
 private class Permuter(val indexes: Int, val places: Int) : Iterable<IntArray> {
     init {
-        assert(indexes > 0)
-        assert(places > 0)
-        assert(places <= indexes)
+        require(indexes > 0)
+        require(places > 0)
+        require(places <= indexes)
     }
 
     override fun iterator(): Iterator<IntArray> = OurIterator()
@@ -141,10 +154,10 @@ fun combinations(indexes: Int, minPlaces: Int, maxPlaces: Int = minPlaces) : Ite
 
 private class Combinator(val indexes: Int, val minPlaces: Int, val maxPlaces: Int) : Iterable<IntArray> {
     init {
-        assert(indexes > 0)
-        assert(minPlaces > 0)
-        assert(maxPlaces >= minPlaces)
-        assert(maxPlaces <= indexes)
+        require(indexes > 0)
+        require(minPlaces > 0)
+        require(maxPlaces >= minPlaces)
+        require(maxPlaces <= indexes)
     }
 
     override fun iterator(): Iterator<IntArray> = OurIterator()
@@ -341,7 +354,7 @@ object Dijkstra {
         start: C,
         targetTester: (pos: C) -> Boolean,
         validMovesResolver: (pos: C) -> List<C>,
-        moveCostResolver: (from: C, to: C) -> Int
+        moveCostResolver: (from: C, to: C) -> Int = { _, _ -> 1 }
     ): Map<C, Int> {
         val costs = mutableMapOf<C, Int>()
         var updated = setOf(start)

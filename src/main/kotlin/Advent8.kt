@@ -36,7 +36,7 @@ private data class Operation(val register: String, val doOper: String, val byVal
 
         fun parse(line: String) : Operation {
             val matcher = PATTERN.matcher(line)
-            assert(matcher.matches())
+            require(matcher.matches())
             return Operation(matcher.group(1), matcher.group(2), matcher.group(3).toInt(),
                 matcher.group(4), matcher.group(5), matcher.group(6).toInt())
         }

@@ -39,7 +39,7 @@ private val LINE_PATTERN = Regex("(\\d+) <-> (.+)").toPattern()
 
 private fun parseLine(line: String, pipes: MutableList<Pipe>) {
     val matcher = LINE_PATTERN.matcher(line)
-    assert(matcher.matches())
+    require(matcher.matches())
     val from = matcher.group(1).toInt()
     val tos = matcher.group(2).split(", ").map { it.toInt() }
     tos.forEach { to -> pipes.add(Pipe(from, to)) }

@@ -1,13 +1,12 @@
 fun main() {
     val input = Utils.readInput(10)
-    val listSize = 256
 
     // task A
     run {
         val lengths = input.split(',').map { it.toInt() }
         var pos = 0
         var skipSize = 0
-        val array = IntArray(listSize) { it }
+        val array = IntArray(256) { it }
 
         lengths.forEach { length ->
             array.reverseWrapping(pos, length)
@@ -22,11 +21,19 @@ fun main() {
 
     // task B
     run {
-        val lengths = input.map { it.toInt() }.toMutableList()
+        val data = input
+        val resultB = Task10.knotHash(data)
+        println("B: $resultB")
+    }
+}
+
+object Task10 {
+    fun knotHash(data: String): String {
+        val lengths = data.asSequence().map(Char::toInt).toMutableList()
         lengths.addAll(listOf(17, 31, 73, 47, 23))
         var pos = 0
         var skipSize = 0
-        val array = IntArray(listSize) { it }
+        val array = IntArray(256) { it }
 
         repeat(64) {
             lengths.forEach { length ->
@@ -37,10 +44,9 @@ fun main() {
             }
         }
 
-        val resultB = array.toList().chunked(16)
+        return array.toList().chunked(16)
             .map { lst -> lst.reduce { acc, n -> acc.xor(n) } }
-            .joinToString(separator = "") { it.toString(16) }
-        println("B: $resultB")
+            .joinToString(separator = "") { it.toString(16).padStart(2, '0') }
     }
 }
 

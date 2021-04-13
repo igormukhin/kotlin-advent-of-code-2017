@@ -29,7 +29,7 @@ private data class Program(val name: String, val weight: Int, val holds: List<St
 
         fun parse(line: String) : Program {
             val matcher = PATTERN.matcher(line)
-            assert(matcher.matches())
+            require(matcher.matches())
             val holds = matcher.group(4)?.split(", ") ?: emptyList()
             return Program(matcher.group(1), matcher.group(2).toInt(), holds)
         }
