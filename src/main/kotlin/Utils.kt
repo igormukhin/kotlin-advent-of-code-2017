@@ -384,3 +384,64 @@ object Dijkstra {
     }
 
 }
+
+object Chain {
+    class Link<T>(val value: T) {
+        var prev: Link<T>? = null
+            private set
+        var next: Link<T>? = null
+            private set
+
+        fun leftmost(): Link<T> {
+            var link = this
+            while (link.prev != null) {
+                link = link.prev!!
+                check(link !== this) { "This chain is a closed cycle" }
+            }
+            return link
+        }
+
+        fun goRight(steps: Int): Link<T> {
+            var link = this
+            repeat (steps) {
+                check(link.next != null) { "Not enough elements in the chain" }
+                link = link.next!!
+            }
+            return link
+        }
+
+        fun insertBefore(link: Link<T>) {
+            next = link
+            prev = link.prev
+            link.prev = this
+        }
+
+        fun insertAfter(link: Link<T>) {
+            prev = link
+            next = link.next
+            link.next = this
+        }
+
+        fun remove() {
+            if (prev != null) {
+                prev!!.next = next
+            }
+            if (next != null) {
+                next!!.prev = prev
+            }
+        }
+
+        fun contentToString(): String {
+            var link: Link<T>? = this.leftmost()
+            val sb = StringBuilder()
+            while (link != null) {
+                if (sb.isNotEmpty()) sb.append(", ")
+                if (link === this) sb.append("(")
+                sb.append(link.value)
+                if (link === this) sb.append(")")
+                link = link.next
+            }
+            return "[$sb]"
+        }
+    }
+}
