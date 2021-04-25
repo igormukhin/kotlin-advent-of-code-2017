@@ -4,7 +4,10 @@ fun main() {
     val input = Utils.readInput(21)
 
     val starting = Image.parse(".#./..#/###")
-    val rules = input.lines().map(::parseRule)
+    val rules = input.lines().associate(::parseRule).toMutableMap()
+    rules.entries.toList().forEach { (from, to) ->
+        from.forEachTransformation { if (rules[it] == null) rules[it] = to }
+    }
 
     println("A: ${runTask(5, starting, rules)}")
     println("B: ${runTask(18, starting, rules)}")
@@ -13,10 +16,9 @@ fun main() {
 private fun runTask(
     iterations: Int,
     starting: Image,
-    rules: List<Pair<Image, Image>>
+    rules: Map<Image, Image>
 ): Int {
     val result = (0 until iterations).fold(starting) { image, iter ->
-        println(iter)
         val div = when {
             image.size % 2 == 0 -> 2
             image.size % 3 == 0 -> 3
@@ -29,7 +31,7 @@ private fun runTask(
         for (i in 0 until dim) {
             for (j in 0 until dim) {
                 val sub = image.subImage(i * div, j * div, div)
-                val translates = rules.first { sub.transformedEquals(it.first) }.second
+                val translates = rules[sub]!!
                 newImage.put(i * newDiv, j * newDiv, translates)
             }
         }
@@ -108,23 +110,27 @@ private class Image(val data: Array<Array<Boolean>>, val top: Int = 0, val left:
         }
     }
 
-    fun rotatedEquals(img: Image): Boolean {
-        if (this.contentEquals(img)) return true
-        var src = transform { rotatePos(it) }
-        if (src.contentEquals(img)) return true
-        src = src.transform { rotatePos(it) }
-        if (src.contentEquals(img)) return true
-        src = src.transform { rotatePos(it) }
-        return src.contentEquals(img)
+    fun materialize(): Image {
+        val newData = Array(size) { i -> Array(size) { j -> at(Pair(i, j)) } }
+        return Image(newData)
     }
 
-    fun transformedEquals(img: Image): Boolean {
-        if (size != img.size) return false
-        if (rotatedEquals(img)) return true
-        if (transform { flipPosH(it) }.rotatedEquals(img)) return true
-        if (transform { flipPosW(it) }.rotatedEquals(img)) return true
-        if (transform { flipPosW(flipPosH(it)) }.rotatedEquals(img)) return true
-        return false
+    fun forEachRotation(consumer: (Image) -> Unit) {
+        var src = this.materialize()
+        consumer(src)
+        src = transform { rotatePos(it) }.materialize()
+        consumer(src)
+        src = src.transform { rotatePos(it) }.materialize()
+        consumer(src)
+        src = src.transform { rotatePos(it) }.materialize()
+        consumer(src)
+    }
+
+    fun forEachTransformation(consumer: (Image) -> Unit) {
+        forEachRotation(consumer)
+        transform { flipPosH(it) }.forEachRotation(consumer)
+        transform { flipPosW(it) }.forEachRotation(consumer)
+        transform { flipPosW(flipPosH(it)) }.forEachRotation(consumer)
     }
 
     private fun rotatePos(pos: Pair<Int, Int>): Pair<Int, Int> {
@@ -147,5 +153,29 @@ private class Image(val data: Array<Array<Boolean>>, val top: Int = 0, val left:
             }
         }
         return cnt
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Image
+
+        return contentEquals(other)
+    }
+
+    override fun hashCode(): Int {
+        var result = materialize().data.contentDeepHashCode()
+        result = 31 * result + size
+        return result
+    }
+
+    fun print() {
+        for (i in 0 until size) {
+            for (j in 0 until size) {
+                print(if (at(Pair(i, j))) '#' else '.')
+            }
+            println()
+        }
     }
 }
