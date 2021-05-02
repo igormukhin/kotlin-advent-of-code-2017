@@ -97,6 +97,9 @@ fun Int.pow(power: Int): Int {
     }
 }
 
+/**
+ * Permutations care about ordering
+ */
 fun permutations(indexes: Int, places: Int = indexes): Iterable<IntArray> {
     return Permuter(indexes, places)
 }
@@ -148,6 +151,9 @@ private class Permuter(val indexes: Int, val places: Int) : Iterable<IntArray> {
     }
 }
 
+/**
+ * Combinations don't care about ordering
+ */
 fun combinations(indexes: Int, minPlaces: Int, maxPlaces: Int = minPlaces) : Iterable<IntArray> {
     return Combinator(indexes, minPlaces, maxPlaces)
 }
